@@ -7,30 +7,24 @@ const functions = require('firebase-functions');
 //  response.send("Hello from Firebase!");
 // });
 exports.toSlack = functions.https.onRequest((request, response) => {
+  var statusArray = []
+  statusArray = ["red", "yellow", "red", "red", "green", "red", "yello", "red"] // Liav change this!!!
+  const colors = {
+    red: "#ff0000",
+    yellow: "#ffff00",
+    green: "#00ff00"
+  }
+  response.contentType("application/json");
+  var N = 8; 
+  const stateIndex = Array.apply(null, {length: N}).map(Number.call, Number)
+  attachments = stateIndex.map(index => {
+    return {
+      color: colors[statusArray[index]],
+      title: "Floor " + (Math.floor(index/2) + 12).toString() + " " + (index % 2 ? "Men" : "Women")
+    }
+  })
   response.send(JSON.stringify({
-    "attachments": [
-        {
-            "fallback": "Required plain-text summary of the attachment.",
-            "color": "#36a64f",
-            "pretext": "Optional text that appears above the attachment block",
-            "author_name": "Bobby Tables",
-            "author_link": "http://flickr.com/bobby/",
-            "author_icon": "http://flickr.com/icons/bobby.jpg",
-            "title": "Slack API Documentation",
-            "title_link": "https://api.slack.com/",
-            "text": "Optional text that appears within the attachment",
-            "fields": [
-                {
-                    "title": "Priority",
-                    "value": "High",
-                    "short": false
-                }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
-            "footer": "Slack API",
-            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-            "ts": 123456789
-        }
-    ]
-}))
+      "text": "PANW TLV site toilet occupency",
+      "attachments": attachments
+  }))
+})
